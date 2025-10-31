@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm test
+    
+    - name: Compile
+      run: npm run compile
+    
+    - name: Copy webview files
+      run: npm run copy-webview
+    
+    - name: Package extension
+      run: npm run package
+    
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name: Generate changelog
+      id: changelog
+      uses: metcalfc/changelog-generator@v4.1.0
+      with:
+        myToken: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ steps.get_version.outputs.VERSION }}
+        body: ${{ steps.changelog.outputs.changelog }}
+        files: '*.vsix'
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Publish to VS Code Marketplace
+      run: npx vsce publish --no-dependencies
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    
+    - name: Publish to Open VSX Registry
+      run: npx ovsx publish --no-dependencies
+      env:
+        OVSX_PAT: ${{ secrets.OVSX_PAT }}
+    
+    - name: Notify success
+      if: success()
+      run: |
+        echo "✅ Release ${{ steps.get_version.outputs.VERSION }} published successfully!"
+        echo "📦 VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=RomyRianata.fix-augment"
+    
+    - name: Notify failure
+      if: failure()
+      run: |
+        echo "❌ Release failed!"
+        exit 1

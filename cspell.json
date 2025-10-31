@@ -1,0 +1,52 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "Romy",
+    "Rianata",
+    "Xplois",
+    "Lite",
+    "augment",
+    "vscode",
+    "hljs",
+    "monokai",
+    "dracula",
+    "webview",
+    "VSIX",
+    "VSCE",
+    "OVSX",
+    "Tsinghua",
+    "refactor",
+    "refactoring",
+    "debounce",
+    "debouncing",
+    "sanitize",
+    "sanitization",
+    "codebase",
+    "breakpoint",
+    "breakpoints",
+    "instanceof",
+    "typeof",
+    "readonly",
+    "keyof",
+    "typeof",
+    "Thenable",
+    "disposable",
+    "disposables"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "out",
+    "dist",
+    "*.vsix",
+    "coverage",
+    ".vscode-test",
+    "*.log",
+    "package-lock.json"
+  ],
+  "enableFiletypes": [
+    "typescript",
+    "markdown",
+    "json"
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "name": "fix-augment",
   "displayName": "Fix Augment",
-  "description": "Enhanced Augment extension with improved Agent workflows, formatting, and productivity features by MrXploisLite",
-  "version": "2.2.5",
+  "description": "World-class Augment enhancement with enterprise-grade code quality, comprehensive fixes, and productivity features by MrXploisLite",
+  "version": "2.3.0",
   "publisher": "RomyRianata",
   "author": {
     "name": "Romy Rianata (MrXploisLite)"
@@ -267,10 +267,17 @@
     "copy-webview": "mkdir -p out/webview && cp -r src/webview/* out/webview/ || (mkdir out\\webview 2>nul & xcopy /E /Y src\\webview\\* out\\webview\\)",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
     "test": "vscode-test",
+    "test:unit": "vscode-test --run tests/unit/**/*.test.ts",
+    "test:coverage": "vscode-test --coverage",
+    "test:performance": "node scripts/performance-test.js",
     "package": "vsce package",
-    "publish": "vsce publish"
+    "publish": "vsce publish",
+    "clean": "rimraf out dist *.vsix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
