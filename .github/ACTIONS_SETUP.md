@@ -22,6 +22,10 @@ SonarCloud provides code quality analysis and technical debt tracking.
 
 **Workflow:** Used in `.github/workflows/ci.yml` (code-quality job)
 
+**Notes:**
+- The workflow leverages `SonarSource/sonarqube-scan-action@v5.0.0` with `SONAR_HOST_URL` preset to `https://sonarcloud.io`
+- If the `SONAR_TOKEN` secret is not configured, the workflow emits a warning and skips the scan to avoid false negatives
+
 ### 2. SNYK_TOKEN (Required for Snyk Security Scan)
 
 Snyk scans for security vulnerabilities in dependencies.
@@ -38,6 +42,10 @@ Snyk scans for security vulnerabilities in dependencies.
 9. Click "Add secret"
 
 **Workflow:** Used in `.github/workflows/ci.yml` (security job)
+
+**Notes:**
+- The workflow uses `snyk/actions/node@v4` with the command `snyk test`
+- When `SNYK_TOKEN` is not configured, the job posts a warning and skips the scan so other checks can complete
 
 ### 3. VSCE_PAT (Required for VS Code Marketplace Publishing)
 
