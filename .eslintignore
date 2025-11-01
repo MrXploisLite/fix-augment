@@ -1,7 +1,0 @@
-node_modules
-out
-dist
-*.vsix
-coverage
-.vscode-test
-*.js

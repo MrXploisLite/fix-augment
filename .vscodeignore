@@ -9,6 +9,8 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+.github/**
+sonar-project.properties
 
 # Exclude unnecessary files from node_modules
 node_modules/highlight.js/es/**

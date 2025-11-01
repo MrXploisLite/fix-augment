@@ -28,13 +28,26 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
+    - name: Setup Xvfb (Linux only)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb libxkbfile-dev libsecret-1-dev
+    
     - name: Lint code
       run: npm run lint
     
     - name: Compile TypeScript
       run: npm run compile
     
-    - name: Run tests
+    - name: Run tests (Linux with Xvfb)
+      if: runner.os == 'Linux'
+      run: xvfb-run -a npm test
+      env:
+        CI: true
+    
+    - name: Run tests (Non-Linux)
+      if: runner.os != 'Linux'
       run: npm test
       env:
         CI: true
@@ -70,19 +83,14 @@ jobs:
       run: npm run lint -- --format json --output-file eslint-report.json
       continue-on-error: true
     
+    # Note: SonarCloud requires SONAR_TOKEN secret to be configured in GitHub repository settings
+    # To set up: Repository Settings -> Secrets and variables -> Actions -> New repository secret
+    # Get the token from: https://sonarcloud.io/account/security
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      with:
-        args: >
-          -Dsonar.projectKey=fix-augment
-          -Dsonar.organization=mrxploislite
-          -Dsonar.sources=src
-          -Dsonar.tests=tests
-          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-          -Dsonar.eslint.reportPaths=eslint-report.json
 
   security:
     name: Security Scan
@@ -92,6 +100,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
+    # Note: Snyk requires SNYK_TOKEN secret to be configured in GitHub repository settings
+    # To set up SNYK_TOKEN:
+    # 1. Create a free Snyk account at https://snyk.io/
+    # 2. Get your API token from: https://app.snyk.io/account (Account Settings -> API Token)
+    # 3. Add it to GitHub: Repository Settings -> Secrets and variables -> Actions -> New repository secret
+    # 4. Name: SNYK_TOKEN, Value: [Your Snyk API token]
     - name: Run Snyk Security Scan
       uses: snyk/actions/node@master
       env:
@@ -154,8 +168,13 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
+    - name: Setup Xvfb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb libxkbfile-dev libsecret-1-dev
+    
     - name: Run performance tests
-      run: npm run test:performance
+      run: xvfb-run -a npm run test:performance
       continue-on-error: true
     
     - name: Upload performance results
