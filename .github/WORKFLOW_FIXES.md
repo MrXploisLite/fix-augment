@@ -45,9 +45,11 @@ This document summarizes all the fixes applied to resolve the three failing GitH
 
 **Files Modified:**
 - `.github/workflows/ci.yml`:
-  - Added documentation comments above SonarCloud Scan step
-  - Simplified configuration (now uses `sonar-project.properties`)
-  - Provided instructions for setting up SONAR_TOKEN secret
+  - Migrated to `SonarSource/sonarqube-scan-action@v5.0.0` with `SONAR_HOST_URL` preset to `https://sonarcloud.io`
+  - Added conditional execution and warning message when `SONAR_TOKEN` is missing
+  - Provided instructions for setting up the SONAR_TOKEN secret
+- `.github/ACTIONS_SETUP.md`:
+  - Documented the new SonarCloud action usage and skip behaviour when the secret is absent
 
 **Setup Required:**
 - Repository owner needs to configure `SONAR_TOKEN` secret in GitHub
@@ -61,12 +63,11 @@ This document summarizes all the fixes applied to resolve the three failing GitH
 
 **Files Modified:**
 - `.github/workflows/ci.yml`:
-  - Added detailed setup instructions as comments above Snyk scan step
-  - Instructions include:
-    1. Creating a Snyk account
-    2. Obtaining API token
-    3. Adding token as GitHub secret
-    4. Proper secret naming (`SNYK_TOKEN`)
+  - Upgraded to `snyk/actions/node@v4` with an explicit `snyk test` command
+  - Added conditional execution and a warning when `SNYK_TOKEN` is missing
+  - Retained inline guidance for configuring the Snyk secret
+- `.github/ACTIONS_SETUP.md`:
+  - Documented the updated Snyk action usage and skip behaviour when the secret is absent
 
 **Setup Required:**
 - Repository owner needs to configure `SNYK_TOKEN` secret in GitHub
